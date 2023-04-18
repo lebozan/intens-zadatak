@@ -1,5 +1,6 @@
 package praksa.intens.zadatakintens.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -46,13 +47,19 @@ public class JobCandidateController {
     }
 
     @PostMapping
-    public ResponseEntity<JobCandidate> addJobCandidate(@RequestBody JobCandidateDTO dto) {
+    public ResponseEntity<JobCandidate> addJobCandidate(@RequestBody @Valid JobCandidateDTO dto) {
         return new ResponseEntity<>(jobCandidateService.addJobCandidate(dto), HttpStatus.CREATED);
     }
 
     @PutMapping(value = "/{id}")
     public ResponseEntity<JobCandidateDTO> updateJobCandidateWithSkill(@PathVariable Long id, @RequestBody SkillDTO dto) {
-        JobCandidate candidate = jobCandidateService.updateJobCandidateWithSkill(id, dto.getSkillName());
+        JobCandidate candidate;
+        try {
+            candidate = jobCandidateService.updateJobCandidateWithSkill(id, dto.getSkillName());
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
 
         return new ResponseEntity<>(jobCandidateMapper.toDto(candidate), HttpStatus.OK);
     }

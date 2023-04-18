@@ -1,5 +1,6 @@
 package praksa.intens.zadatakintens.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +21,7 @@ public class SkillController {
     }
 
     @PostMapping
-    public ResponseEntity<Skill> addNewSkill(@RequestBody SkillDTO dto) {
+    public ResponseEntity<Skill> addNewSkill(@RequestBody @Valid SkillDTO dto) {
         Skill newSkill = skillService.addSkill(dto);
         return new ResponseEntity<>(newSkill, HttpStatus.CREATED);
     }

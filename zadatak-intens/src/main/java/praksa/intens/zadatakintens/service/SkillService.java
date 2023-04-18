@@ -5,6 +5,7 @@ import praksa.intens.zadatakintens.dto.SkillDTO;
 import praksa.intens.zadatakintens.model.Skill;
 import praksa.intens.zadatakintens.repository.SkillRepository;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,7 +27,7 @@ public class SkillService {
     }
 
     public List<Skill> findAllSkills() {
-        return skillRepository.findAll();
+        return skillRepository.findAll().stream().sorted(Comparator.comparing(Skill::getId)).toList();
     }
 
 

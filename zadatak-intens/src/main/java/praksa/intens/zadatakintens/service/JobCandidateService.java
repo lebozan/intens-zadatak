@@ -8,6 +8,7 @@ import praksa.intens.zadatakintens.model.Skill;
 import praksa.intens.zadatakintens.repository.JobCandidateRepository;
 import praksa.intens.zadatakintens.repository.SkillRepository;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -38,8 +39,12 @@ public class JobCandidateService {
         JobCandidate candidate = findJobCandidate.orElseThrow();
         Optional<Skill> findSkill = skillRepository.findBySkillName(skillName);
         findSkill.ifPresentOrElse((skill) -> {
-                candidate.getSkills().add(skill);
-                jobCandidateRepository.save(candidate);
+                if (!candidate.getSkills().contains(skill)) {
+                    candidate.getSkills().add(skill);
+                    jobCandidateRepository.save(candidate);
+                } else {
+                    throw new RuntimeException("User already has that skill!");
+                }
             }, () -> {
                 Skill newSkill = new Skill(skillName);
                 newSkill = skillRepository.save(newSkill);
@@ -47,8 +52,8 @@ public class JobCandidateService {
                 jobCandidateRepository.save(candidate);
             }
         );
-
-        return candidate;
+        JobCandidate updatedCandidate = jobCandidateRepository.findById(candidateId).orElseThrow();
+        return updatedCandidate;
     }
 
     public List<JobCandidate> searchJobCandidateByName(String nameQuery) {
@@ -68,6 +73,6 @@ public class JobCandidateService {
     }
 
     public List<JobCandidate> getAll() {
-        return jobCandidateRepository.findAll();
+        return jobCandidateRepository.findAll().stream().sorted(Comparator.comparing(JobCandidate::getId)).toList();
     }
 }
