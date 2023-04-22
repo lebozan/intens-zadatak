@@ -12,6 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/skills")
+@CrossOrigin(originPatterns = "*")
 public class SkillController {
 
     private final SkillService skillService;

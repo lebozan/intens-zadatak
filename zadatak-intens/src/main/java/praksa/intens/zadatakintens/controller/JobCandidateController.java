@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/api/job-candidates")
+@CrossOrigin(originPatterns = "*")
 public class JobCandidateController {
 
     private final JobCandidateService jobCandidateService;
@@ -56,7 +57,9 @@ public class JobCandidateController {
         JobCandidate candidate;
         try {
             candidate = jobCandidateService.updateJobCandidateWithSkill(id, dto.getSkillName());
-        } catch (Exception e) {
+        }  catch (NoSuchElementException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (RuntimeException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
